@@ -1,0 +1,3 @@
+[submodule "ws_ROS2_ursim/src/ur_simulation_gz"]
+	path = ws_ROS2_ursim/src/ur_simulation_gz
+	url = https://github.com/UniversalRobots/Universal_Robots_ROS2_GZ_Simulation.git
