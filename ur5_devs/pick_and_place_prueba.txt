@@ -1,0 +1,26 @@
+ Program
+   Variables Setup
+   Robot Program
+     MoveJ
+       Waypoint_1
+     Loop
+       Wait: 0.5
+       MoveL
+         Waypoint_2
+         Wait: 1.0
+         Waypoint_1
+       Wait: 0.5
+       MoveP
+         CircleMove
+           ViaPoint_1
+           EndPoint_1
+       Wait: 0.5
+       MoveL
+         Waypoint_3
+         Wait: 1.0
+         EndPoint_1
+       Wait: 0.5
+       MoveP
+         CircleMove
+           ViaPoint_1
+           Waypoint_1
