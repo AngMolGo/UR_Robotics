@@ -103,6 +103,12 @@ Al ejecutar ambos programas tenemos una estación robot-teachpendant completamen
 
 ![Simulador completo](media/readme/virtual_station.gif)
 
+## Networking
+
+También se puede establecer una comunicación entre dos contenedores vía Modbus a través de la sub-red de Docker.
+
+![Rutina Pick & Place con 2 robots vía modbus](media/readme/rutina_pick_and_place_dos_robots_modbus.gif)
+
 # Simulador en ROS2 Gazebo (adicional)
 
 Adicionalmente podemos conectar la simulación de Rviz con el simulador Gazebo para simular el robot en un entorno 3D dinámico, interactuando con otros robots, objetos y sensores.

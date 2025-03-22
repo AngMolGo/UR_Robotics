@@ -1,0 +1,104 @@
+def pick_place_robot_1():
+  global _hidden_verificationVariable=0
+  step_count_e6e5dbfe_82b6_4039_aecc_777b04d27b8c = 0.0
+  thread Step_Counter_Thread_b12aa988_cbc6_4800_8cf5_a037e6f7c132():
+    while (True):
+      step_count_e6e5dbfe_82b6_4039_aecc_777b04d27b8c = step_count_e6e5dbfe_82b6_4039_aecc_777b04d27b8c + 1.0
+      sync()
+    end
+  end
+  run Step_Counter_Thread_b12aa988_cbc6_4800_8cf5_a037e6f7c132()
+  set_gravity([0.0, 0.0, 9.82])
+  set_standard_analog_input_domain(0, 1)
+  set_standard_analog_input_domain(1, 1)
+  set_tool_analog_input_domain(0, 1)
+  set_tool_analog_input_domain(1, 1)
+  set_analog_outputdomain(0, 0)
+  set_analog_outputdomain(1, 0)
+  set_input_actions_to_default()
+  set_safety_mode_transition_hardness(1)
+  modbus_add_signal("192.168.56.3", 255, 128, 2, "robot2ready", False)
+  modbus_set_signal_update_frequency("robot2ready", 10)
+  modbus_add_signal("192.168.56.3", 255, 160, 2, "robot2set", False)
+  modbus_set_signal_update_frequency("robot2set", 10)
+  set_tool_communication(False, 115200, 0, 1, 1.5, 3.5)
+  set_tool_output_mode(0)
+  set_tool_digital_output_mode(0, 1)
+  set_tool_digital_output_mode(1, 1)
+  set_tool_voltage(0)
+  set_tcp(p[0.0,0.0,0.0,0.0,0.0,0.0])
+  set_target_payload(0.100000, [0.000000, 0.000000, 0.000000], [0.000033, 0.000033, 0.000033, 0.000000, 0.000000, 0.000000])
+  global Waypoint_1_p=p[-.130859406351, -.597683970173, .249999999563, -.035484193663, 3.116345277713, .039322536349]
+  global Waypoint_1_q=[-1.5707963267368097, -1.9683433912165675, -1.7151232560025074, -1.0544401971959685, 1.5953027315870227, -0.023084677685064392]
+  global Waypoint_2_p=p[-.130859406351, -.597683970284, .080000009262, -.035484193663, 3.116345277713, .039322536349]
+  global Waypoint_2_q=[-1.5707963267948966, -2.242300182150233, -1.8239804304776976, -0.6716262317885358, 1.5953027315855195, -0.023084677743149484]
+  global ViaPoint_1_p=p[.449151914155, -.130859406366, .249999998710, 2.246019332807, -2.195446675775, -.055561072449]
+  global ViaPoint_1_q=[-3.3274680788508704E-9, -1.6582631794029323, -2.121975123812815, -0.9576685571771826, 1.5953027467959497, -0.023084684483553275]
+  global EndPoint_1_p=p[.130859406386, .597683970166, .249999999563, 3.115919697866, .035479347718, -.038640756490]
+  global EndPoint_1_q=[1.570796326794897, -1.9683433912165675, -1.7151232560025074, -1.0544401971959685, 1.5953027315870227, -0.023084677685064392]
+  global Waypoint_3_p=p[.130859406386, .597683970166, .079999999887, 3.115919697866, .035479347718, -.038640756490]
+  global Waypoint_3_q=[1.5707963267368064, -2.2423002001795362, -1.8239804319580841, -0.6716262122788619, 1.5953027315855406, -0.023084677743189452]
+  while (True):
+    $ 2 "Robot Program"
+    $ 3 "MoveJ"
+    $ 4 "Waypoint_1" "breakAfter"
+    movej(get_inverse_kin(Waypoint_1_p, qnear=Waypoint_1_q), a=1.3962634015954636, v=1.0471975511965976)
+    $ 5 "write_port_register(128,0)"
+    write_port_register(128,0)
+    $ 6 "write_port_register(160,1)"
+    write_port_register(160,1)
+    $ 7 "Loop"
+    while (True):
+      $ 8 "Wait: 0.5"
+      sleep(0.5)
+      $ 9 "write_port_register(128,1)"
+      write_port_register(128,1)
+      $ 10 "Wait robot2set≟1"
+      while (not(modbus_get_signal_status("robot2set") == 1)):
+        sync()
+      end
+      $ 11 "write_port_register(160,0)"
+      write_port_register(160,0)
+      $ 12 "write_port_register(128,0)"
+      write_port_register(128,0)
+      $ 13 "Wait robot2ready≟1"
+      while (not(modbus_get_signal_status("robot2ready") == 1)):
+        sync()
+      end
+      $ 14 "write_port_register(160,1)"
+      write_port_register(160,1)
+      $ 15 "MoveL"
+      $ 16 "Waypoint_2" "breakAfter"
+      movel(Waypoint_2_p, a=1.2, v=0.25)
+      $ 17 "Wait: 1.0"
+      sleep(1.0)
+      $ 18 "Waypoint_1" "breakAfter"
+      movel(Waypoint_1_p, a=1.2, v=0.25)
+      $ 19 "Wait: 0.5"
+      sleep(0.5)
+      $ 20 "MoveP"
+      $ 21 "CircleMove"
+      $ 22 "ViaPoint_1" "noBreak"
+      
+      $ 23 "EndPoint_1" "breakAfter"
+      movec(ViaPoint_1_p, EndPoint_1_p, a=1.2, v=0.25, r=0.025, mode=1)
+      $ 24 "Wait: 0.5"
+      sleep(0.5)
+      $ 25 "MoveL"
+      $ 26 "Waypoint_3" "breakAfter"
+      movel(Waypoint_3_p, a=1.2, v=0.25)
+      $ 27 "Wait: 1.0"
+      sleep(1.0)
+      $ 28 "EndPoint_1" "breakAfter"
+      movel(EndPoint_1_p, a=1.2, v=0.25)
+      $ 29 "Wait: 0.5"
+      sleep(0.5)
+      $ 30 "MoveP"
+      $ 31 "CircleMove"
+      $ 32 "ViaPoint_1" "noBreak"
+      
+      $ 33 "Waypoint_1" "breakAfter"
+      movec(ViaPoint_1_p, Waypoint_1_p, a=1.2, v=0.25, r=0.0, mode=1)
+    end
+  end
+end

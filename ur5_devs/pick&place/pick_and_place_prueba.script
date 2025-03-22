@@ -1,13 +1,20 @@
 def pick_and_place_prueba():
   global _hidden_verificationVariable=0
-  set_safety_mode_transition_hardness(1)
-  set_target_payload(0.100000, [0.000000, 0.000000, 0.000000], [0.000033, 0.000033, 0.000033, 0.000000, 0.000000, 0.000000])
+  step_count_db39b202_89a3_4143_a7aa_8d4d848c270a = 0.0
+  thread Step_Counter_Thread_e51f2073_4f61_49bf_ab06_b6cfbcc1544e():
+    while (True):
+      step_count_db39b202_89a3_4143_a7aa_8d4d848c270a = step_count_db39b202_89a3_4143_a7aa_8d4d848c270a + 1.0
+      sync()
+    end
+  end
+  run Step_Counter_Thread_e51f2073_4f61_49bf_ab06_b6cfbcc1544e()
+  set_tcp(p[0.0,0.0,0.0,0.0,0.0,0.0])
   set_tool_communication(False, 115200, 0, 1, 1.5, 3.5)
   set_tool_output_mode(0)
   set_tool_digital_output_mode(0, 1)
   set_tool_digital_output_mode(1, 1)
   set_tool_voltage(0)
-  set_tcp(p[0.0,0.0,0.0,0.0,0.0,0.0])
+  set_gravity([0.0, 0.0, 9.82])
   set_standard_analog_input_domain(0, 1)
   set_standard_analog_input_domain(1, 1)
   set_tool_analog_input_domain(0, 1)
@@ -15,15 +22,8 @@ def pick_and_place_prueba():
   set_analog_outputdomain(0, 0)
   set_analog_outputdomain(1, 0)
   set_input_actions_to_default()
-  set_gravity([0.0, 0.0, 9.82])
-  step_count_94d95d37_32c9_4a44_8f7a_5f3c93b11c22 = 0.0
-  thread Step_Counter_Thread_f3d82cf0_06c4_418b_8375_6922fa06842b():
-    while (True):
-      step_count_94d95d37_32c9_4a44_8f7a_5f3c93b11c22 = step_count_94d95d37_32c9_4a44_8f7a_5f3c93b11c22 + 1.0
-      sync()
-    end
-  end
-  run Step_Counter_Thread_f3d82cf0_06c4_418b_8375_6922fa06842b()
+  set_safety_mode_transition_hardness(1)
+  set_target_payload(0.100000, [0.000000, 0.000000, 0.000000], [0.000033, 0.000033, 0.000033, 0.000000, 0.000000, 0.000000])
   global Waypoint_1_p=p[-.130859406351, -.597683970173, .249999999563, -.035484193663, 3.116345277713, .039322536349]
   global Waypoint_1_q=[-1.5707963267368097, -1.9683433912165675, -1.7151232560025074, -1.0544401971959685, 1.5953027315870227, -0.023084677685064392]
   global Waypoint_2_p=p[-.130859406351, -.597683970284, .080000009262, -.035484193663, 3.116345277713, .039322536349]

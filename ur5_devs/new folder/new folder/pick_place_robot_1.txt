@@ -1,0 +1,34 @@
+ Program
+   Variables Setup
+   Robot Program
+     MoveJ
+       Waypoint_1
+     write_port_register(128,0)
+     write_port_register(160,1)
+     Loop
+       Wait: 0.5
+       write_port_register(128,1)
+       Wait robot2set≟1
+       write_port_register(160,0)
+       write_port_register(128,0)
+       Wait robot2ready≟1
+       write_port_register(160,1)
+       MoveL
+         Waypoint_2
+         Wait: 1.0
+         Waypoint_1
+       Wait: 0.5
+       MoveP
+         CircleMove
+           ViaPoint_1
+           EndPoint_1
+       Wait: 0.5
+       MoveL
+         Waypoint_3
+         Wait: 1.0
+         EndPoint_1
+       Wait: 0.5
+       MoveP
+         CircleMove
+           ViaPoint_1
+           Waypoint_1
