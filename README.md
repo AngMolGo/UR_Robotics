@@ -14,11 +14,12 @@ La interfaz de usuario de UR Polyscope se puede ejecutar de 2 maneras: directame
 Ejecutar el siguiente comando:
 
 ``` bash
-docker run --rm -it \   # Comando para ejecutar el contenedor
-    -p 5900:5900 -p 6080:6080 \ # Puertos expuestos
-    -v "${HOME}/Projects/UR_robotics/programs:/ursim/programs" \ # Volumen para guardar los programas
-    -e ROBOT_MODEL=UR10 \ # Se puede indicar qué robot programar
-    universalrobots/ursim_e-series # Imagen del contenedor
+docker run --rm -it \
+    -p 5900:5900 -p 6080:6080 \
+    -v "${HOME}/Projects/UR_robotics/ur5_devs:/ursim/programs" \
+    -e ROBOT_MODEL=UR5 \
+    --network=ursim_net \
+    universalrobots/ursim_e-series
 ```
 
 De esta manera tenemos más control sobre el contenedor y podemos gestionar la red de comunicación hacia otros contenedores y simuladores.
@@ -36,11 +37,9 @@ De esta manera tenemos más control sobre el contenedor y podemos gestionar la r
   > 2. Se necesita tener instalado el paquete Universal_Robots_ROS2_Driver correctamente compilado. En la siguiente sección *"Simulador (Rviz)"* se describe cómo instalar el paquete. 
 
   ``` bash
-  source /opt/ros/{$ROS_DISTRO}/setup.bash  # Source ROS2 
-  export COLCON_WS=~/path/to/your/workspace 
+  source /opt/ros/{$ROS_DISTRO}/setup.bash  # Source ROS2
   source $COLCON_WS/install/setup.bash      # Source del workspace
-  ros2 run ur_client_library start_ursim.sh \
-          -m ur20 # Podemos indicar qué robot usar
+  ros2 run ur_client_library start_ursim.sh -m ur20
   ```
 
 De esta manera obtenemos el mismo resultado, un link que tiene acceso a un contenedor donde se estará ejecutando una aplicación web de Polyscope.
@@ -69,11 +68,11 @@ Con el paquete previamente instalado:
 ``` bash
 cd $COLCON_WS
 source install/setup.bash
-ros2 launch ur_robot_driver \      # Package de UR
-     ur_control.launch.py \        # Launch file
-     ur_type:=<ur_type> \          # Robot a utilizar
-     robot_ip:=<ip_of_polyscope> \ # IP de robot
-     launch_rviz:=true             # Usar simulador Rviz
+ros2 launch ur_robot_driver \
+     ur_control.launch.py \
+     ur_type:=ur5 \
+     robot_ip:=<ip_of_polyscope> \
+     launch_rviz:=true
 ```
 > [!NOTE]
 > Para que el simulador pueda detectar una configuración definida, primero tiene que estar corriendo el contenedor de Docker.
