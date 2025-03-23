@@ -105,6 +105,16 @@ Al ejecutar ambos programas tenemos una estación robot-teachpendant completamen
 
 ## Networking
 
+### Conexión desde una tableta electrónica
+
+Una implementación de esta aplicación es abrir el url del contenedor en una tableta, de esta manera pretendemos tener un teach-pendant en nuestras manos para controlar a nuestro robot simulado. Para esto se necesita crear una red de Docker de tipo `macvlan` con salida a nuestra red local física y realizar un bridge a nuestra interfaz de red.
+
+![Polyscope desde una tableta electrónica](media/readme/teach-pendant_tablet_test.gif)
+
+---
+
+### Conexión Modbus mediante una red virtual
+
 También se puede establecer una comunicación entre dos contenedores vía Modbus a través de la sub-red de Docker.
 
 ![Rutina Pick & Place con 2 robots vía modbus](media/readme/rutina_pick_and_place_dos_robots_modbus.gif)
