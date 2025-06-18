@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Inicializar ROS2
+source /opt/ros/jazzy/setup.bash
+# Inicializar entorno de la aplicación
+source /home/angmolgo/Projects/UR_robotics/ws_ROS2_ursim/install/setup.bash
+
+# Inicializar docker
+contenedor=$(docker run --rm -d -p 5901:5900 -p 6081:6080 -p 503:502 -v "/home/angmolgo/Projects/UR_robotics/ur5_devs/modbus_plc_connection/robot_scripts:/ursim/programs" -e ROBOT_MODEL=UR5 --net ursim_net --ip 192.168.56.102 universalrobots/ursim_e-series)
+
+# Espera 5 segundos:
+sleep 3
+
+# Abre el contenedor con Polyscope en el browser
+gio open "http://192.168.56.102:6080/vnc.html?host=192.168.56.102&port=6080" &> /dev/null
+
+# Espera a que
+echo "¿Ya inicializaste los joints?"
+read opcion
+
+# Iniciar simulación:
+#ros2 launch ur_robot_driver ur_control.launch.py ur_type:=ur5 robot_ip:=192.168.56.2 launch_rviz:=true
+
+# Eliminar contenedor
+docker rm -f $contenedor

@@ -1,0 +1,7 @@
+ Program
+   Variables Setup
+   Robot Program
+     write_port_register(128,1)
+     Wait: 5.0
+     write_port_register(128,0)
+     Wait: 5.0

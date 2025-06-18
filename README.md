@@ -7,7 +7,7 @@
 
 ## Polyscope (Browser)
 
-La interfaz de usuario de UR Polyscope se puede ejecutar de 2 maneras: directamente por Docker o por ROS2. En ambos casos se creará un contenedor de Docker que expondrá 2 puertos para poder comunicarnos con la interfaz gráfica de Polyscope.
+La interfaz de usuario de UR Polyscope se puede ejecutar de 2 maneras: directamente por Docker o por ROS2. En ambos casos se creará un contenedor de Docker que expondrá 2 puertos dedicados a comunicar, a través de una VPN, la interfaz gráfica de Polyscope.
 
 ### Opción 1: Docker (recomendado)
 
@@ -75,7 +75,7 @@ ros2 launch ur_robot_driver \
      launch_rviz:=true
 ```
 > [!NOTE]
-> Para que el simulador pueda detectar una configuración definida, primero tiene que estar corriendo el contenedor de Docker.
+> Para que el simulador pueda detectar el valor de los estados del robot, primero tiene que estar corriendo el contenedor de Docker.
 
 Para mostrar el estado (posición y velocidad) de las articulaciones:
 ``` bash
@@ -105,19 +105,65 @@ Al ejecutar ambos programas tenemos una estación robot-teachpendant completamen
 
 ## Networking
 
+Para que la aplicación pueda establecer una comunicación con otros dispositivos físicos (PLCs, computadoras, etc) debemos crear una sub-red de docker que haga un bridge hacia nuestra red local (LAN) con el siguiente comando:
+
+``` bash
+docker network create -d ipvlan --subnet=192.168.100.0/24 --gateway=192.168.100.1 -o parent=wlp0s20f3 urnet_lab_test
+```
+
+Para este ejemplo, se realizó un bridge de tipo ```ipvlan``` que hace que nuestro dispositivo actúe como un router virtual y le asigne a nuestros contenedores una dirección ip virtual, pero que pueden ser contactados desde la red. Para esto utiliza la interfaz de red inalámbrica ```wlp0s20f3``` (previamente identificado).
+
+De esta manera ya se puede inicializar el contenedor con la sub-red de docker creada:
+
+``` bash
+docker run --rm -d -p 5900:5900 -p 6080:6080 -p 502:502 -v "/home/angmolgo/Projects/UR_robotics/ur5_devs/modbus_plc_connection/robot_scripts:/ursim/programs" -e ROBOT_MODEL=UR5 --net urnet_casa_test --ip 192.168.100.101 universalrobots/ursim_e-series
+```
+> [!NOTE]
+> Se debe crear una nueva sub-red de docker cada vez que cambie el número de red (te conectas a una red nueva y cambie la red XXX.XXX.XXX...).
+> Se deberá contactar con el administrador de la red para realizar la asignación de IPs.
+> Si se realiza la asignación de IPs a través de la dirección MAC, se debe usar una sub-red de tipo ```macvlan```.
+
+Para este punto, los contenedores van a tener su propia ip y podrán ser contactados por otros dispositivos en la misma red, por lo que exponer los puertos 5900, 6080 y 502 ya no será necesario.
+
+### Conexión interna
+
+> [!NOTE]
+> Al usar una sub-red del tipo ```ipvlan``` adscrito a la tarjeta de red del dispositivo, el host no podrá establecer una comunicación directa con el contenedor, será una ip "inalcanzable".
+
+Para esto se deberá crear una nueva interfaz de red virtual en el dispositivo (por así decirlo, una "tarjeta de red virtual") que permitirá acceder a las IPs virtuales de la sub-red de docker.
+
+``` bash
+sudo ip link add ipvlan0 link wlp0s20f3 type ipvlan mode l2
+```
+
+Luego asignaremos una ip falsa:
+
+``` bash
+sudo ip addr add 192.168.100.199/24 dev ipvlan0
+```
+
+Y por último, habilitarla:
+
+``` bash
+sudo ip link set ipvlan0 up
+```
+
+De esta manera se puede exponer los contenedores a la red local y poder seguir interactuando con ellos desde sockets internos en el mismo dispositivo.
+Esto es útil para exponer los contenedores a la red, que se puedan comunicar, por ejemplo, con un PLCs  y poder correr simulaciones de ROS2 con la misma computadora.
+
 ### Conexión desde una tableta electrónica
 
-Una implementación de esta aplicación es abrir el url del contenedor en una tableta, de esta manera pretendemos tener un teach-pendant en nuestras manos para controlar a nuestro robot simulado. Para esto se necesita crear una red de Docker de tipo `macvlan` con salida a nuestra red local física y realizar un bridge a nuestra interfaz de red.
+Una implementación de esta aplicación es abrir el url del contenedor en una tableta, de esta manera pretendemos tener un teach-pendant en nuestras manos para controlar a nuestro robot simulado.
 
 ![Polyscope desde una tableta electrónica](media/readme/teach-pendant_tablet_test.gif)
-
----
 
 ### Conexión Modbus mediante una red virtual
 
 También se puede establecer una comunicación entre dos contenedores vía Modbus a través de la sub-red de Docker.
 
 ![Rutina Pick & Place con 2 robots vía modbus](media/readme/rutina_pick_and_place_dos_robots_modbus.gif)
+
+
 
 # Simulador en ROS2 Gazebo (adicional)
 
@@ -175,3 +221,4 @@ git clone --recurse-submodules https://github.com/AngMolGo/UR_Robotics
 - Guía de instalación de Docker Engine en Ubuntu: https://docs.docker.com/engine/install/ubuntu/
 - Tutorial oficial de ROS2: https://docs.ros.org/en/jazzy/Tutorials.html
 - Tutorial oficial de Docker: https://docs.docker.com/get-started/introduction/whats-next/
+- Documentación de redes ipvlan de docker: https://docs.docker.com/engine/network/drivers/ipvlan/#ipvlan-l2-mode-example-usage

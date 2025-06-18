@@ -1,0 +1,40 @@
+def unnamed():
+  global _hidden_verificationVariable=0
+  step_count_d73fa177_a90b_4ede_9896_4c401a3153db = 0.0
+  thread Step_Counter_Thread_74af2595_350a_457a_bfdf_5c35effe2e9b():
+    while (True):
+      step_count_d73fa177_a90b_4ede_9896_4c401a3153db = step_count_d73fa177_a90b_4ede_9896_4c401a3153db + 1.0
+      sync()
+    end
+  end
+  run Step_Counter_Thread_74af2595_350a_457a_bfdf_5c35effe2e9b()
+  set_tool_communication(False, 115200, 0, 1, 1.5, 3.5)
+  set_tool_output_mode(0)
+  set_tool_digital_output_mode(0, 1)
+  set_tool_digital_output_mode(1, 1)
+  set_tool_voltage(0)
+  set_standard_analog_input_domain(0, 1)
+  set_standard_analog_input_domain(1, 1)
+  set_tool_analog_input_domain(0, 1)
+  set_tool_analog_input_domain(1, 1)
+  set_analog_outputdomain(0, 0)
+  set_analog_outputdomain(1, 0)
+  set_input_actions_to_default()
+  modbus_add_signal("192.168.56.101", 255, 1, 0, "MODBUS_1", False)
+  modbus_set_signal_update_frequency("MODBUS_1", 10)
+  set_safety_mode_transition_hardness(1)
+  set_tcp(p[0.0,0.0,0.0,0.0,0.0,0.0])
+  set_target_payload(0.000000, [0.000000, 0.000000, 0.000000], [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000])
+  set_gravity([0.0, 0.0, 9.82])
+  while (True):
+    $ 2 "Robot Program"
+    $ 3 "write_port_register(128,1)"
+    write_port_register(128,1)
+    $ 4 "Wait: 5.0"
+    sleep(5.0)
+    $ 5 "write_port_register(128,0)"
+    write_port_register(128,0)
+    $ 6 "Wait: 5.0"
+    sleep(5.0)
+  end
+end
