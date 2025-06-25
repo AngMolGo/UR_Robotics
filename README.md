@@ -151,6 +151,14 @@ sudo ip link set ipvlan0 up
 De esta manera se puede exponer los contenedores a la red local y poder seguir interactuando con ellos desde sockets internos en el mismo dispositivo.
 Esto es útil para exponer los contenedores a la red, que se puedan comunicar, por ejemplo, con un PLCs  y poder correr simulaciones de ROS2 con la misma computadora.
 
+Para hacer un escaneo de la red, se puede instalar el paquete ```nmap``` en la terminal:
+
+``` bash
+sudo apt update -y && sudo apt upgrade -y
+sudo apt install nmap -y
+nmap -sn <segmento de red>/24
+```
+
 ### Conexión desde una tableta electrónica
 
 Una implementación de esta aplicación es abrir el url del contenedor en una tableta, de esta manera pretendemos tener un teach-pendant en nuestras manos para controlar a nuestro robot simulado.
@@ -163,7 +171,15 @@ También se puede establecer una comunicación entre dos contenedores vía Modbu
 
 ![Rutina Pick & Place con 2 robots vía modbus](media/readme/rutina_pick_and_place_dos_robots_modbus.gif)
 
+## Conexión Modbus entre PLC y simuladoor
 
+Para realizar prácticas de automatización con robots industriales se puede hacer el *bridge* de la red de docker con la red local. El contenedor es capaz de establecer comunicación Modbus con la red física.
+
+![Diagrama de red](media/readme/ur_modbus_plc_diagrama_de_red.png)
+
+Ejemplo de programa de arranque de la programación del robot a través del PLC:
+
+![Arranque de robot desde PLC a través de Modbus](media/readme/ur_modbus_plc_connection_application.gif)
 
 # Simulador en ROS2 Gazebo (adicional)
 
@@ -222,3 +238,4 @@ git clone --recurse-submodules https://github.com/AngMolGo/UR_Robotics
 - Tutorial oficial de ROS2: https://docs.ros.org/en/jazzy/Tutorials.html
 - Tutorial oficial de Docker: https://docs.docker.com/get-started/introduction/whats-next/
 - Documentación de redes ipvlan de docker: https://docs.docker.com/engine/network/drivers/ipvlan/#ipvlan-l2-mode-example-usage
+- Tutorial Conexión PLC Modbus Client: https://www.youtube.com/watch?v=RLPEDuUbxqQ
